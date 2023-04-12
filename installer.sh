@@ -2,7 +2,7 @@
 ##setup command=wget -q "--no-check-certificate" https://git.multics.one/Qu4k3/ONEupdaterE2/raw/branch/main/installer.sh -O - | /bin/sh
 
 ######### Only This line to edit with new version ######
-version=1.0
+version='2.0'
 ##############################################################
 
 TMPPATH=/tmp/ONEupdaterE2
@@ -101,6 +101,6 @@ echo "#                  https://multics.ONE                  #"
 echo "#########################################################"
 echo "#           your Device will RESTART Now                #"
 echo "#########################################################"
-sleep 3
+sleep 5
 killall -9 enigma2
 exit 0
