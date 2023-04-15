@@ -2,7 +2,7 @@
 ##setup command=wget -q "--no-check-certificate" https://git.multics.one/Qu4k3/ONEupdaterE2/raw/branch/main/installer.sh -O - | /bin/sh
 
 ######### Only This line to edit with new version ######
-version='2.0'
+version='2.1'
 ##############################################################
 
 TMPPATH=/tmp/ONEupdaterE2

@@ -10,15 +10,15 @@ from Plugins.Plugin import PluginDescriptor
 from Components.MenuList import MenuList
 from Components.Label import Label
 from enigma import *
-from urllib.request import urlopen, Request
 import os
+from .extras.compat import compat_urlopen, compat_Request
 from .extras.Console import Console
 from threading import Timer
 from .Ciefp import *
 from .Morpheus883 import *
 
 App = 'ONEupdater E2'
-Version = '2.0'
+Version = '2.1'
 Developer = 'Qu4k3'
 ONE = 'https://multics.ONE'
 ONE_tmp =  '/tmp/ONEupdater/'
@@ -244,8 +244,8 @@ class ONEupdater(Screen):
 				
 	def update_me(self):
 		remote_version = '0.0'
-		req = Request(ONE_installer, headers={'User-Agent': 'Mozilla/5.0'})
-		page = urlopen(req).read()
+		req = compat_Request(ONE_installer, headers={'User-Agent': 'Mozilla/5.0'})
+		page = compat_urlopen(req).read()
 		data = page.decode("utf-8")
 		if data:
 			lines = data.split("\n")
