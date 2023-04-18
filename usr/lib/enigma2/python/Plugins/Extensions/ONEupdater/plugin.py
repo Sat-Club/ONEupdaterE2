@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 ###################
 ## ONEupdater E2 ##
 ###################
@@ -14,11 +16,11 @@ import os
 from .extras.compat import compat_urlopen, compat_Request
 from .extras.Console import Console
 from threading import Timer
-from .Ciefp import *
-from .Morpheus883 import *
+from .settings.Ciefp import *
+from .settings.Morpheus883 import *
 
 App = 'ONEupdater E2'
-Version = '2.1'
+Version = '2.2'
 Developer = 'Qu4k3'
 ONE = 'https://multics.ONE'
 ONE_tmp =  '/tmp/ONEupdater/'
@@ -107,6 +109,7 @@ class ONEupdater(Screen):
 	    os.system('wget ' + Morph + ' -O ' + Morph_zip)
 	    
 	def install_setting(self, name, zip, folder):
+		os.system('mkdir -p ' + ONE_tmp)
 		os.system("unzip " + zip + " '" + folder + "/*' -d '" + ONE_tmp + "';")
 		os.system('rm -rf /etc/enigma2/lamedb')
 		os.system('rm -rf /etc/enigma2/*.radio')
@@ -255,7 +258,7 @@ class ONEupdater(Screen):
 					remote_version = line.split("'")[1]
 					break
 		
-		if float(Version) != float(remote_version) or float(Version) < float(remote_version):
+		if float(Version) < float(remote_version):
 			new_version = remote_version
 			self.session.openWithCallback(self.install_update, MessageBox, _("New version %s is available.\n\nDo you want to install it now?" % (new_version)), MessageBox.TYPE_YESNO)
 
@@ -271,11 +274,14 @@ class ONEupdater(Screen):
 			#self.session.open(TryQuitMainloop, 3) # 0=Toggle StandBy ; 1=DeepStandBy ; 2=Reboot System ; 3=Restart Enigma ; 4=Wake Up ; 5=Enter Standby
 
 ####################################################
+####################################################
 
 def main(session):
 	session.open(ONEupdater)
 
+####################################################
+
 def Plugins(**kwargs):
 	return PluginDescriptor(name=App, description=App + ' v'+ Version, where = PluginDescriptor.WHERE_PLUGINMENU, icon="one.jpg", fnc = main)
 
-
+####################################################
