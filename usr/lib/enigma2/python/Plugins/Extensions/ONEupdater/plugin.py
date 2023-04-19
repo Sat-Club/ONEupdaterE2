@@ -20,7 +20,7 @@ from .settings.Ciefp import *
 from .settings.Morpheus883 import *
 
 App = 'ONEupdater E2'
-Version = '2.2'
+Version = '2.3'
 Developer = 'Qu4k3'
 ONE = 'https://multics.ONE'
 ONE_tmp =  '/tmp/ONEupdater/'
