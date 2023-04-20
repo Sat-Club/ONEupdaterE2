@@ -13,14 +13,14 @@ from Components.MenuList import MenuList
 from Components.Label import Label
 from enigma import *
 import os
-from .extras.compat import compat_urlopen, compat_Request
+from .extras.compat import compat_urlopen, compat_Request, PY3
 from .extras.Console import Console
 from threading import Timer
 from .settings.Ciefp import *
 from .settings.Morpheus883 import *
 
 App = 'ONEupdater E2'
-Version = '2.3'
+Version = '2.4'
 Developer = 'Qu4k3'
 ONE = 'https://multics.ONE'
 ONE_tmp =  '/tmp/ONEupdater/'
@@ -247,20 +247,28 @@ class ONEupdater(Screen):
 				
 	def update_me(self):
 		remote_version = '0.0'
+		remote_changelog = ''
 		req = compat_Request(ONE_installer, headers={'User-Agent': 'Mozilla/5.0'})
 		page = compat_urlopen(req).read()
-		data = page.decode("utf-8")
+		if PY3:
+			data = page.decode("utf-8")
+		else:
+			data = page.encode("utf-8")
 		if data:
 			lines = data.split("\n")
 			for line in lines:
 				if line.startswith("version"):
 					remote_version = line.split("=")
 					remote_version = line.split("'")[1]
+				if line.startswith("changelog"):
+					remote_changelog = line.split("=")
+					remote_changelog = line.split("'")[1]
 					break
 		
 		if float(Version) < float(remote_version):
 			new_version = remote_version
-			self.session.openWithCallback(self.install_update, MessageBox, _("New version %s is available.\n\nDo you want to install it now?" % (new_version)), MessageBox.TYPE_YESNO)
+			new_changelog = remote_changelog
+			self.session.openWithCallback(self.install_update, MessageBox, _("New version %s is available.\n\nChangelog: %s \n\nDo you want to install it now?" % (new_version, new_changelog)), MessageBox.TYPE_YESNO)
 
 	def install_update(self, answer=False):
 		if answer:

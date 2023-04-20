@@ -1,8 +1,9 @@
 #!/bin/bash
 ##setup command=wget -q "--no-check-certificate" https://git.multics.one/Qu4k3/ONEupdaterE2/raw/branch/main/installer.sh -O - | /bin/sh
 
-######### Only This line to edit with new version ######
-version='2.3'
+######### Only This 2 lines to edit with new version ######
+version='2.4'
+changelog='Added Changelog, Python2 fix'
 ##############################################################
 
 TMPPATH=/tmp/ONEupdaterE2
