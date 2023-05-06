@@ -190,27 +190,27 @@ class ONEupdater(Screen):
 	        try:
 	            self.check_user_config()
 	            date = user_config['date']
-                name = user_config['name']
-                author = user_config['author']
-                path = user_config['path']
-                api = ''
-                if author == "Ciefp":
-                    api = Ciefp_api
-                    fzip = Ciefp_zip
-                elif author == "Morpheus883":
-                    api = Morph_api
-                    fzip = Morph_zip
-                local_install_date = date
-                self.check_github_api(api)
-                remote_date = github_api['updated_at']
-                strp_remote_date = datetime.strptime(remote_date, '%Y-%m-%dT%H:%M:%SZ')
-                remote_install_date = strp_remote_date.strftime('%Y-%m-%d')
-
-                if local_install_date < remote_install_date:
-                    self.install_setting(name, fzip, path)
-            except:
-                trace_error
-                pass
+	            name = user_config['name']
+	            author = user_config['author']
+	            path = user_config['path']
+	            api = ''
+	            if author == "Ciefp":
+	                api = Ciefp_api
+	                fzip = Ciefp_zip
+	            elif author == "Morpheus883":
+	                api = Morph_api
+	                fzip = Morph_zip
+	            local_install_date = date
+	            self.check_github_api(api)
+	            remote_date = github_api['updated_at']
+	            strp_remote_date = datetime.strptime(remote_date, '%Y-%m-%dT%H:%M:%SZ')
+	            remote_install_date = strp_remote_date.strftime('%Y-%m-%d')
+	            
+	            if local_install_date < remote_install_date:
+	                self.install_setting(name, fzip, path)
+	        except:
+	           trace_error
+	           pass
 
 	def ask_upgrade(self):
 	  try:
@@ -415,14 +415,14 @@ class ONEupdater(Screen):
 			new_version = remote_version
 			new_changelog = remote_changelog
 			self.session.openWithCallback(self.install_update, MessageBox, _("New version %s is available.\n\nChangelog: %s \n\nDo you want to install it now?" % (new_version, new_changelog)), MessageBox.TYPE_YESNO)
-        else:
-            self.ask_upgrade()
+		else:
+		    self.ask_upgrade()
 
 	def install_update(self, answer=False):
 		if answer:
 			self.session.open(Console, title='Upgrading...', cmdlist='wget -q "--no-check-certificate" https://git.multics.one/Qu4k3/ONEupdaterE2/raw/branch/main/installer.sh -O - | /bin/sh', finishedCallback=self.myCallback, closeOnSuccess=False)
-        else:
-            self.ask_upgrade()
+		else:
+		    self.ask_upgrade()
 
 	def myCallback(self, result):
 		return
