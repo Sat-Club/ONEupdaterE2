@@ -28,4 +28,5 @@ CiefpM = 'Ciefp Settings Motor (68E - 30W)'
 CiefpM_path = 'ciefp-E2-motor-68E-30W-VOD'
 Ciefp_zip = '/tmp/ONEupdater_ciefp_settings.zip'
 Ciefp_folder = 'ciefpsettings-enigma2-master/'
+Ciefp_api = 'https://api.github.com/repos/ciefp/ciefpsettings-enigma2'
 

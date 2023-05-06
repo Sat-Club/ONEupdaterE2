@@ -53,4 +53,5 @@ MorphM = 'Motor - FULLFeed (45.0°W - 76.5°E)'
 MorphM_path = 'morph883_motor'
 Morph_zip = '/tmp/ONEupdater_morpheus883_settings.zip'
 Morph_folder = 'enigma2-settings-master/'
+Morph_api = 'https://api.github.com/repos/morpheus883/enigma2-settings'
 

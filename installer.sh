@@ -2,8 +2,8 @@
 ##setup command=wget -q "--no-check-certificate" https://git.multics.one/Qu4k3/ONEupdaterE2/raw/branch/main/installer.sh -O - | /bin/sh
 
 ######### Only This 2 lines to edit with new version ######
-version='2.4'
-changelog='Added Changelog, Python2 fix'
+version='2.5'
+changelog='Added AutoUpdate Settings when open Plugin, \nNeed reinstall settings manually to create cfg files'
 ##############################################################
 
 TMPPATH=/tmp/ONEupdaterE2
@@ -81,7 +81,7 @@ fi
    tar -xzf main.tar.gz
    cp -r 'oneupdatere2/usr' '/'
 set +e
-cd 
+cd
 sleep 2
 
 ### Check if plugin installed correctly
@@ -96,7 +96,7 @@ echo ""
 echo ""
 echo "#########################################################"
 echo "#          ONEupdaterE2 INSTALLED SUCCESSFULLY          #"
-echo "#                 developed by Qu4k3                    #"              
+echo "#                 developed by Qu4k3                    #"
 echo "#                                                       #"
 echo "#                  https://multics.ONE                  #"
 echo "#########################################################"
