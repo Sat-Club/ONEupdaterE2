@@ -18,7 +18,10 @@ from .extras.Console import Console
 from threading import Timer
 from .settings.Ciefp import *
 from .settings.Morpheus883 import *
-import configparser
+if PY3:
+    import configparser
+else:
+    import ConfigParser
 import json
 from Tools.Directories import SCOPE_PLUGINS, resolveFilename
 from datetime import datetime
