@@ -2,8 +2,8 @@
 ##setup command=wget -q "--no-check-certificate" https://git.multics.one/Qu4k3/ONEupdaterE2/raw/branch/main/installer.sh -O - | /bin/sh
 
 ######### Only This 2 lines to edit with new version ######
-version='2.5'
-changelog='Added AutoUpdate Settings when open Plugin, \nNeed reinstall settings manually to create cfg files'
+version='2.6'
+changelog='\nAdded AutoUpdate Settings when open Plugin \nNeed reinstall settings manually to create cfg files \nFixed API'
 ##############################################################
 
 TMPPATH=/tmp/ONEupdaterE2

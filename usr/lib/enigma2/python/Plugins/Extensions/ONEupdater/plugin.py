@@ -26,7 +26,7 @@ from os import path as os_path, remove as os_remove
 
 
 App = 'ONEupdater E2'
-Version = '2.5'
+Version = '2.6'
 Developer = 'Qu4k3'
 ONE = 'https://multics.ONE'
 ONE_tmp =  '/tmp/ONEupdater/'
@@ -202,7 +202,7 @@ class ONEupdater(Screen):
 	                fzip = Morph_zip
 	            local_install_date = date
 	            self.check_github_api(api)
-	            remote_date = github_api['updated_at']
+	            remote_date = github_api['pushed_at']
 	            strp_remote_date = datetime.strptime(remote_date, '%Y-%m-%dT%H:%M:%SZ')
 	            remote_install_date = strp_remote_date.strftime('%Y-%m-%d')
 	            
@@ -224,7 +224,7 @@ class ONEupdater(Screen):
 	    elif author == "Morpheus883":
 	      api = Morph_api
 	    self.check_github_api(api)
-	    remote_date = github_api['updated_at']
+	    remote_date = github_api['pushed_at']
 	    strp_remote_date = datetime.strptime(remote_date, '%Y-%m-%dT%H:%M:%SZ')
 	    remote_install_date = strp_remote_date.strftime('%Y-%m-%d')
 
