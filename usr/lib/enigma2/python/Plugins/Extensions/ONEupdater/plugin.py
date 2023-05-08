@@ -4,28 +4,28 @@
 ## ONEupdater E2 ##
 ###################
 
+import os
+import json
+from os import path as os_path, remove as os_remove
+from enigma import *
+from datetime import datetime
+from threading import Timer
 from Screens.Screen import Screen
 from Screens.MessageBox import MessageBox
 from Screens.Standby import TryQuitMainloop
-from Components.ActionMap import ActionMap, NumberActionMap
-from Plugins.Plugin import PluginDescriptor
-from Components.MenuList import MenuList
+from Components.ActionMap import ActionMap
 from Components.Label import Label
-from enigma import *
-import os
+from Components.MenuList import MenuList
+from Tools.Directories import SCOPE_PLUGINS, resolveFilename
+from Plugins.Plugin import PluginDescriptor
 from .extras.compat import compat_urlopen, compat_Request, PY3
 from .extras.Console import Console
-from threading import Timer
 from .settings.Ciefp import *
 from .settings.Morpheus883 import *
 if PY3:
     import configparser
 else:
     import ConfigParser
-import json
-from Tools.Directories import SCOPE_PLUGINS, resolveFilename
-from datetime import datetime
-from os import path as os_path, remove as os_remove
 
 
 App = 'ONEupdater E2'
@@ -50,7 +50,7 @@ def logdata(label_name = '', data = None):
     try:
         data=str(data)
         fp = open('/tmp/ONEupdater.log', 'a')
-        fp.write( str(label_name) + ' : ' + data +"\n")
+        fp.write( str(label_name) + ': ' + data +"\n")
         fp.close()
     except:
         trace_error()
@@ -67,11 +67,11 @@ def dellog(label_name = '', data = None):
 
 class ONEupdater(Screen):
 	skin = """
-    <screen title="ONEupdater E2" position="center,center" size="900,500" font="Regular;45">
+    <screen title="ONEupdater E2" position="center,center" size="900,500" font="Regular;45" >
         <widget name="menu" position="30,30" size="800,400" font="Regular;25" itemHeight="45" scrollbarMode="showOnDemand" />
-        <widget name="Version" position="left,475" size="100,20" font="Regular;18" halign="center" valign="center" />
-        <widget name="Developer" position="center,475" size="300,22" font="Regular;20" halign="center" valign="center" />
-        <widget name="Website" position="623,475" size="400,20" font="Regular;18" halign="center" valign="center" />
+        <widget name="Version" position="5,475" size="100,20" font="Regular;16" halign="center" valign="center" foregroundColor="#4073ff" />
+        <widget name="Developer" position="300,475" size="300,22" font="Regular;20" halign="center" valign="center" foregroundColor="#299438" />
+        <widget name="Website" position="623,475" size="400,20" font="Regular;16" halign="center" valign="center" foregroundColor="#fad000" />
     </screen>
     """
 
@@ -80,7 +80,7 @@ class ONEupdater(Screen):
 		self.session = session
 		Screen.__init__(self, session)
 		dellog()
-		logdata(App, " started")
+		logdata(App, "started")
 		self.main_menu()
 
 	def main_menu(self):
