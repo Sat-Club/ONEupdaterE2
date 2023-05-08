@@ -29,7 +29,7 @@ else:
 
 
 App = 'ONEupdater E2'
-Version = '2.6'
+Version = '2.7'
 Developer = 'Qu4k3'
 ONE = 'https://multics.ONE'
 ONE_tmp =  '/tmp/ONEupdater/'
