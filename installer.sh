@@ -2,8 +2,8 @@
 ##setup command=wget -q "--no-check-certificate" https://git.multics.one/Qu4k3/ONEupdaterE2/raw/branch/main/installer.sh -O - | /bin/sh
 
 ######### Only This 2 lines to edit with new version ######
-version='2.7'
-changelog='\nFixed many bugs on PY2 images'
+version='2.8'
+changelog='\nFixed bug on AutoUpdater'
 ##############################################################
 
 TMPPATH=/tmp/ONEupdaterE2

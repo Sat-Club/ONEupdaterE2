@@ -164,6 +164,8 @@ class ONEupdater(Screen):
 		return user_config
 
 	def install_setting(self, name, fzip, folder):
+		global installed
+		installed = '0'
 		try_author = name.split()[0]
 		if try_author == "Ciefp":
 			author = 'Ciefp'
@@ -182,7 +184,7 @@ class ONEupdater(Screen):
 		os.system('rm -rf ' + ONE_tmp + ';')
 		os.system('rm -rf ' + ONE_dir + 'user/user_config.ini')
 		os.system('echo "###################\n## ONEupdater E2 ##\n###################\n\n[settings]\nname = ' + name +'\ndate = ' + install_date + '\nauthor = ' + author +'\npath = ' + folder + '\n" > ' + ONE_dir + 'user/user_config.ini')
-
+		installed = '1'
 		return True
 
 	def installed(self, name):
@@ -200,9 +202,11 @@ class ONEupdater(Screen):
 	            if author == "Ciefp":
 	                api = Ciefp_api
 	                fzip = Ciefp_zip
+	                link = Ciefp
 	            elif author == "Morpheus883":
 	                api = Morph_api
 	                fzip = Morph_zip
+	                link = Morph
 	            local_install_date = date
 	            self.check_github_api(api)
 	            remote_date = github_api['pushed_at']
@@ -210,7 +214,10 @@ class ONEupdater(Screen):
 	            remote_install_date = strp_remote_date.strftime('%Y-%m-%d')
 	            
 	            if local_install_date < remote_install_date:
+	                os.system('wget ' + link + ' -O ' + fzip)
 	                self.install_setting(name, fzip, path)
+	                if installed == '1':
+	                    self.installed(name)
 	        except:
 	           trace_error
 	           pass
@@ -232,7 +239,7 @@ class ONEupdater(Screen):
 	    remote_install_date = strp_remote_date.strftime('%Y-%m-%d')
 
 	    if local_install_date < remote_install_date:
-	      self.session.openWithCallback(self.update_settings, MessageBox, _("%s released a new version of %s at %s \n\nDo you want to install it now?" % (author, name, remote_install_date)), MessageBox.TYPE_YESNO)
+	        self.session.openWithCallback(self.update_settings, MessageBox, _("%s released a new version of %s at %s \n\nDo you want to install it now?" % (author, name, remote_install_date)), MessageBox.TYPE_YESNO)
 	  except:
 	    trace_error()
 	    pass
