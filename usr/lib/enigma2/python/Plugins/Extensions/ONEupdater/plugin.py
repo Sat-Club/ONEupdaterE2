@@ -159,7 +159,7 @@ class ONEupdater(Screen):
 	def check_user_config(self):
 		global user_config
 		user_config_parser = configparser.ConfigParser()
-		user_config_parser.read(ONE_dir + "user/user_config.ini")
+		user_config_parser.read("/etc/enigma2/ONEupdaterE2/user_config.ini")
 		user_config = user_config_parser['settings']
 		return user_config
 
@@ -182,8 +182,8 @@ class ONEupdater(Screen):
 		eDVBDB.getInstance().reloadServicelist()
 		eDVBDB.getInstance().reloadBouquets()
 		os.system('rm -rf ' + ONE_tmp + ';')
-		os.system('rm -rf ' + ONE_dir + 'user/user_config.ini')
-		os.system('echo "###################\n## ONEupdater E2 ##\n###################\n\n[settings]\nname = ' + name +'\ndate = ' + install_date + '\nauthor = ' + author +'\npath = ' + folder + '\n" > ' + ONE_dir + 'user/user_config.ini')
+		os.system('rm -rf/etc/enigma2/ONEupdaterE2/user_config.ini')
+		os.system('echo "###################\n## ONEupdater E2 ##\n###################\n\n[settings]\nname = ' + name +'\ndate = ' + install_date + '\nauthor = ' + author +'\npath = ' + folder + '\n" > /etc/enigma2/ONEupdaterE2/user_config.ini')
 		installed = '1'
 		return True
 
