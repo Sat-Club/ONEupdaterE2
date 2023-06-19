@@ -82,7 +82,7 @@ fi
    cp -r 'oneupdatere2/usr' '/'
 if [ ! -f /etc/enigma2/ONEupdaterE2/user-config.ini ]; then
 	mkdir -p /etc/enigma2/ONEupdaterE2
-	cp -r ${PLUGINPATH}/user/user-config.ini/etc /enigma2/ONEupdaterE2/user-config.ini
+	cp -r ${PLUGINPATH}/user/user-config.ini /etc/enigma2/ONEupdaterE2/user-config.ini
 fi
 set +e
 cd
