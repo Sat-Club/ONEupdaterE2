@@ -80,6 +80,11 @@ fi
    wget https://git.multics.one/Qu4k3/ONEupdaterE2/archive/main.tar.gz
    tar -xzf main.tar.gz
    cp -r 'oneupdatere2/usr' '/'
+if [ ! -f /etc/enigma2/ONEupdaterE2/user-config.ini ]; then
+	mkdir -p /etc/enigma2/ONEupdaterE2
+	cp ${PLUGINPATH}/user/user-config.ini
+/etc/enigma2/ONEupdaterE2/user-config.ini
+fi
 set +e
 cd
 sleep 2
