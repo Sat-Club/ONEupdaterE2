@@ -6,6 +6,7 @@
 
 import os
 import json
+import subprocess
 from os import path as os_path, remove as os_remove
 from enigma import *
 from datetime import datetime
@@ -22,14 +23,17 @@ from .extras.compat import compat_urlopen, compat_Request, PY3
 from .extras.Console import Console
 from .settings.Ciefp import *
 from .settings.Morpheus883 import *
+from .settings.Picons import *
 if PY3:
     import configparser
 else:
     import ConfigParser
 
+from Components.Pixmap import Pixmap
+from enigma import ePicLoad, eTimer
 
 App = 'ONEupdater E2'
-Version = '2.8'
+Version = '2.9'
 Developer = 'Qu4k3'
 ONE = 'https://multics.ONE'
 ONE_tmp =  '/tmp/ONEupdater/'
@@ -72,6 +76,7 @@ class ONEupdater(Screen):
         <widget name="Version" position="5,475" size="100,20" font="Regular;16" halign="center" valign="center" foregroundColor="#4073ff" />
         <widget name="Developer" position="300,475" size="300,22" font="Regular;20" halign="center" valign="center" foregroundColor="#299438" />
         <widget name="Website" position="623,475" size="400,20" font="Regular;16" halign="center" valign="center" foregroundColor="#fad000" />
+        <widget name="spin" position="0,0" size="180,160" alphatest="on" />
     </screen>
     """
 
@@ -88,7 +93,7 @@ class ONEupdater(Screen):
 		self.main_list = []
 		self.main_list.append("Ciefp Settings")
 		self.main_list.append("Morpheus883 Settings")
-		#self.main_list.append("")
+		self.main_list.append("Picons")
 		self["menu"] = MenuList(self.main_list)
 		self["Developer"] = Label(_("Developed by " + Developer))
 		self["Website"] = Label(_(ONE))
@@ -97,6 +102,27 @@ class ONEupdater(Screen):
 		menu = 0
 		t = Timer(0.5, self.update_me)
 		t.start()
+		
+	def menu_picons(self):
+		global menu
+		menu = 1
+		self.picons_list = []
+		self.picons_list.append(Picons1)
+		self.picons_list.append(Picons2)
+		self.picons_list.append(Picons3)
+		self.picons_list.append(Picons4)
+		self.picons_list.append(Picons5)
+		self.picons_list.append(Picons6)
+		self.picons_list.append(Picons7)
+		self.picons_list.append(Picons8)
+		self.picons_list.append(Picons9)
+		self.picons_list.append(Picons10)
+		self.picons_list.append(Picons11)
+		self.picons_list.append(Picons12)
+		self.picons_list.append(Picons13)
+		self["menu"].moveToIndex(0)
+		self["menu"].l.setList(self.picons_list)
+		self.setTitle(_(App + " > Picons"))
 
 	def menu_ciefp(self):
 		global menu
@@ -182,10 +208,48 @@ class ONEupdater(Screen):
 		eDVBDB.getInstance().reloadServicelist()
 		eDVBDB.getInstance().reloadBouquets()
 		os.system('rm -rf ' + ONE_tmp + ';')
-		os.system('rm -rf/etc/enigma2/ONEupdaterE2/user_config.ini')
+		os.system('rm -rf /etc/enigma2/ONEupdaterE2/user_config.ini')
 		os.system('echo "###################\n## ONEupdater E2 ##\n###################\n\n[settings]\nname = ' + name +'\ndate = ' + install_date + '\nauthor = ' + author +'\npath = ' + folder + '\n" > /etc/enigma2/ONEupdaterE2/user_config.ini')
 		installed = '1'
 		return True
+		
+	def install_Picons(self, ulink):
+		today = datetime.today()
+		install_date = today.strftime('%Y-%m-%d')
+		os.system('rm -rf /etc/enigma2/ONEupdaterE2/user_picons.ini')
+		plink = subprocess.check_output(ulink, shell=True, universal_newlines=True)
+		os.system('echo "###################\n## ONEupdater E2 ##\n###################\n\n[settings]\ndate = ' + install_date + '\nlink = ' + plink + '\n" > /etc/enigma2/ONEupdaterE2/user_picons.ini')
+		os.system('mkdir -p ' + ONE_tmp)
+		os.system('wget ' + plink + ' -O ' + ONE_tmp + Picons_ipk)
+		os.system("opkg install " + ONE_tmp + Picons_ipk)
+		os.system('rm -rf ' + ONE_tmp + ';')
+		return True
+
+	def spinner(self):
+		self["spin"] = Pixmap()
+		self.picload = ePicLoad()
+		self.picload.PictureData.get().append(self.showPic)
+		self.picload.getThumbnail('/usr/lib/enigma2/python/Plugins/Extensions/ONEupdater/img/1.png', 100, 100)
+		self.hideShowTimer = eTimer()
+		self.hideShowTimer.callback.append(self.showHide)
+		self.visible = False
+
+	def showPic(self, picInfo=""):
+		ptr = self.picload.getData()
+		if ptr is not None:
+			self["spin"].instance.setPixmap(ptr.__deref__())
+			self["spin"].show()
+			self.hideShowTimer.start(2000, False)
+			self.visible = True
+
+	def showHide(self):
+		if self.visible:
+			self["spin"].hide()
+			self.visible = False
+		else:		
+			self["spin"].show()
+			self.visible = True
+		
 
 	def installed(self, name):
 	    self.session.open(MessageBox,(name + " Installed Successfully"),  MessageBox.TYPE_INFO, timeout=6)
@@ -266,6 +330,9 @@ class ONEupdater(Screen):
 
 			if returnValue == "Morpheus883 Settings":
 				self.menu_morpheus()
+
+			if returnValue == "Picons":
+				self.menu_picons()
 
 			##Ciefp Menu
 			if returnValue == Ciefp1:
@@ -400,6 +467,16 @@ class ONEupdater(Screen):
 			if returnValue == MorphM:
 				if self.install_setting(MorphM, Morph_zip, Morph_folder + MorphM_path):
 				    self.installed(MorphM)
+				    
+			##Picons Menu
+			if returnValue == Picons1:
+			    if self.install_Picons(full_100_dr):
+			        self.installed(Picons1)
+			        
+			if returnValue == Picons2:
+			    if self.install_Picons(sat4_100_dr):
+			        self.installed(Picons2)
+
 
 	def update_me(self):
 		remote_version = '0.0'
@@ -440,6 +517,9 @@ class ONEupdater(Screen):
 	#def restartEnigma(self, answer=False):
 		#if answer:
 			#self.session.open(TryQuitMainloop, 3) # 0=Toggle StandBy ; 1=DeepStandBy ; 2=Reboot System ; 3=Restart Enigma ; 4=Wake Up ; 5=Enter Standbyp
+
+##############################
+##############################
 
 ####################################################
 ####################################################
