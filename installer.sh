@@ -79,7 +79,7 @@ else
 fi
    wget https://github.com/Sat-Club/ONEupdaterE2/archive/refs/heads/main.tar.gz
    tar -xzf main.tar.gz
-   cp -r 'ONEupdaterE2/usr' '/'
+   cp -r 'ONEupdaterE2-main/usr' '/'
 if [ ! -f /etc/enigma2/ONEupdaterE2/user_config.ini ]; then
 	mkdir -p /etc/enigma2/ONEupdaterE2
 	cp -r ${PLUGINPATH}/user/user_config.ini /etc/enigma2/ONEupdaterE2/user_config.ini
