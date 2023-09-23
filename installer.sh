@@ -77,7 +77,7 @@ else
    echo ""
    echo ""
 fi
-   wget https://git.multics.one/Qu4k3/ONEupdaterE2/archive/main.tar.gz
+   wget https://github.com/Sat-Club/ONEupdaterE2/archive/refs/heads/main.tar.gz
    tar -xzf main.tar.gz
    cp -r 'oneupdatere2/usr' '/'
 if [ ! -f /etc/enigma2/ONEupdaterE2/user_config.ini ]; then
