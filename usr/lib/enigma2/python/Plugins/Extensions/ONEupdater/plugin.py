@@ -30,14 +30,15 @@ else:
     import ConfigParser
 
 from Components.Pixmap import Pixmap
-from enigma import ePicLoad, eTimer
+
+#session = None
 
 App = 'ONEupdater E2'
 Version = '2.9'
 Developer = 'Qu4k3'
-ONE = 'https://multics.ONE'
+ONE = 'https://sat-club.eu'
 ONE_tmp =  '/tmp/ONEupdater/'
-ONE_installer = 'https://git.multics.one/Qu4k3/ONEupdaterE2/raw/branch/main/installer.sh'
+ONE_installer = 'https://raw.githubusercontent.com/Sat-Club/ONEupdaterE2/main/installer.sh'
 ONE_dir = resolveFilename(SCOPE_PLUGINS, "Extensions/ONEupdater/")
 
 
@@ -76,7 +77,7 @@ class ONEupdater(Screen):
         <widget name="Version" position="5,475" size="100,20" font="Regular;16" halign="center" valign="center" foregroundColor="#4073ff" />
         <widget name="Developer" position="300,475" size="300,22" font="Regular;20" halign="center" valign="center" foregroundColor="#299438" />
         <widget name="Website" position="623,475" size="400,20" font="Regular;16" halign="center" valign="center" foregroundColor="#fad000" />
-        <widget name="spin" position="0,0" size="180,160" alphatest="on" />
+        <ePixmap position="310,85" size="256,256" pixmap="/usr/lib/enigma2/python/Plugins/Extensions/MyMetrix/mymetrix.png" alphatest="blend" />
     </screen>
     """
 
@@ -98,11 +99,12 @@ class ONEupdater(Screen):
 		self["Developer"] = Label(_("Developed by " + Developer))
 		self["Website"] = Label(_(ONE))
 		self["Version"] = Label(_("Version " + Version))
+		
 		self["actions"] = ActionMap(["OkCancelActions", "NumberActions"],{"ok": self.ok, "cancel": self.Exit}, -1)
 		menu = 0
 		t = Timer(0.5, self.update_me)
 		t.start()
-		
+
 	def menu_picons(self):
 		global menu
 		menu = 1
@@ -212,44 +214,21 @@ class ONEupdater(Screen):
 		os.system('echo "###################\n## ONEupdater E2 ##\n###################\n\n[settings]\nname = ' + name +'\ndate = ' + install_date + '\nauthor = ' + author +'\npath = ' + folder + '\n" > /etc/enigma2/ONEupdaterE2/user_config.ini')
 		installed = '1'
 		return True
+
+	def loading(self):
+	    self.session.open(MessageBox,("Loading"),  MessageBox.TYPE_INFO, timeout=4)
 		
 	def install_Picons(self, ulink):
-		today = datetime.today()
-		install_date = today.strftime('%Y-%m-%d')
-		os.system('rm -rf /etc/enigma2/ONEupdaterE2/user_picons.ini')
-		plink = subprocess.check_output(ulink, shell=True, universal_newlines=True)
-		os.system('echo "###################\n## ONEupdater E2 ##\n###################\n\n[settings]\ndate = ' + install_date + '\nlink = ' + plink + '\n" > /etc/enigma2/ONEupdaterE2/user_picons.ini')
-		os.system('mkdir -p ' + ONE_tmp)
-		os.system('wget ' + plink + ' -O ' + ONE_tmp + Picons_ipk)
-		os.system("opkg install " + ONE_tmp + Picons_ipk)
-		os.system('rm -rf ' + ONE_tmp + ';')
-		return True
-
-	def spinner(self):
-		self["spin"] = Pixmap()
-		self.picload = ePicLoad()
-		self.picload.PictureData.get().append(self.showPic)
-		self.picload.getThumbnail('/usr/lib/enigma2/python/Plugins/Extensions/ONEupdater/img/1.png', 100, 100)
-		self.hideShowTimer = eTimer()
-		self.hideShowTimer.callback.append(self.showHide)
-		self.visible = False
-
-	def showPic(self, picInfo=""):
-		ptr = self.picload.getData()
-		if ptr is not None:
-			self["spin"].instance.setPixmap(ptr.__deref__())
-			self["spin"].show()
-			self.hideShowTimer.start(2000, False)
-			self.visible = True
-
-	def showHide(self):
-		if self.visible:
-			self["spin"].hide()
-			self.visible = False
-		else:		
-			self["spin"].show()
-			self.visible = True
-		
+	    today = datetime.today()
+	    install_date = today.strftime('%Y-%m-%d')
+	    os.system('rm -rf /etc/enigma2/ONEupdaterE2/user_picons.ini')
+	    plink = subprocess.check_output(ulink, shell=True, universal_newlines=True)
+	    os.system('echo "###################\n## ONEupdater E2 ##\n###################\n\n[settings]\ndate = ' + install_date + '\nlink = ' + plink + '\n" > /etc/enigma2/ONEupdaterE2/user_picons.ini')
+	    os.system('mkdir -p ' + ONE_tmp)
+	    os.system('wget ' + plink + ' -O ' + ONE_tmp + Picons_ipk)
+	    os.system("opkg install " + ONE_tmp + Picons_ipk)
+	    os.system('rm -rf ' + ONE_tmp + ';')
+	    return True
 
 	def installed(self, name):
 	    self.session.open(MessageBox,(name + " Installed Successfully"),  MessageBox.TYPE_INFO, timeout=6)
@@ -533,3 +512,5 @@ def Plugins(**kwargs):
 	return PluginDescriptor(name=App, description=App + ' v'+ Version, where=[PluginDescriptor.WHERE_EXTENSIONSMENU, PluginDescriptor.WHERE_PLUGINMENU], icon="one.jpg", fnc = main)
 
 ####################################################
+
+

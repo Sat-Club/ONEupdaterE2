@@ -1,9 +1,9 @@
 #!/bin/bash
-##setup command=wget -q "--no-check-certificate" https://git.multics.one/Qu4k3/ONEupdaterE2/raw/branch/main/installer.sh -O - | /bin/sh
+##setup command=wget -q "--no-check-certificate" https://raw.githubusercontent.com/Sat-Club/ONEupdaterE2/main/installer.sh -O - | /bin/sh
 
 ######### Only This 2 lines to edit with new version ######
-version='2.8'
-changelog='\nFixed bug on AutoUpdater'
+version='2.9'
+changelog='\nAdded Picons\nChanged Repository\nSat-Club.EU Release'
 ##############################################################
 
 TMPPATH=/tmp/ONEupdaterE2
