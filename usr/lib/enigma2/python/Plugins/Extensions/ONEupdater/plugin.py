@@ -34,7 +34,7 @@ from Components.Pixmap import Pixmap
 #session = None
 
 App = 'ONEupdater E2'
-Version = '2.9'
+Version = '2.9.1'
 Developer = 'Qu4k3'
 ONE = 'https://sat-club.eu'
 ONE_tmp =  '/tmp/ONEupdater/'
