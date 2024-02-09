@@ -34,7 +34,7 @@ from Components.Pixmap import Pixmap
 #session = None
 
 App = 'ONEupdater E2'
-Version = '2.9.1'
+Version = '3.0'
 Developer = 'Qu4k3'
 ONE = 'https://sat-club.eu'
 ONE_tmp =  '/tmp/ONEupdater/'
@@ -131,14 +131,21 @@ class ONEupdater(Screen):
 		menu = 1
 		self.ciefp_list = []
 		self.ciefp_list.append(Ciefp1)
-		self.ciefp_list.append(Ciefp2)
-		self.ciefp_list.append(Ciefp3)
-		self.ciefp_list.append(Ciefp4)
+		self.ciefp_list.append(Ciefp2A)
+		self.ciefp_list.append(Ciefp2B)
+		self.ciefp_list.append(Ciefp3A)
+		self.ciefp_list.append(Ciefp3B)
+		self.ciefp_list.append(Ciefp4A)
+		self.ciefp_list.append(Ciefp4B)
 		self.ciefp_list.append(Ciefp5)
 		self.ciefp_list.append(Ciefp6)
 		self.ciefp_list.append(Ciefp7)
 		self.ciefp_list.append(Ciefp8)
 		self.ciefp_list.append(Ciefp9)
+		self.ciefp_list.append(Ciefp10)
+		self.ciefp_list.append(Ciefp13)
+		self.ciefp_list.append(Ciefp16)
+		self.ciefp_list.append(Ciefp18)
 		self.ciefp_list.append(CiefpM)
 		self["menu"].moveToIndex(0)
 		self["menu"].l.setList(self.ciefp_list)
@@ -318,17 +325,29 @@ class ONEupdater(Screen):
 				if self.install_setting(Ciefp1, Ciefp_zip, Ciefp_folder + Ciefp1_path):
 				    self.installed(Ciefp1)
 
-			if returnValue == Ciefp2:
-				if self.install_setting(Ciefp2, Ciefp_zip, Ciefp_folder + Ciefp2_path):
-				    self.installed(Ciefp2)
+			if returnValue == Ciefp2A:
+				if self.install_setting(Ciefp2A, Ciefp_zip, Ciefp_folder + Ciefp2A_path):
+				    self.installed(Ciefp2A)
 
-			if returnValue == Ciefp3:
-				if self.install_setting(Ciefp3, Ciefp_zip, Ciefp_folder + Ciefp3_path):
-				    self.installed(Ciefp3)
+			if returnValue == Ciefp2B:
+				if self.install_setting(Ciefp2B, Ciefp_zip, Ciefp_folder + Ciefp2B_path):
+				    self.installed(Ciefp2B)
 
-			if returnValue == Ciefp4:
-				if self.install_setting(Ciefp4, Ciefp_zip, Ciefp_folder + Ciefp4_path):
-				    self.installed(Ciefp4)
+			if returnValue == Ciefp3A:
+				if self.install_setting(Ciefp3A, Ciefp_zip, Ciefp_folder + Ciefp3A_path):
+				    self.installed(Ciefp3A)
+
+			if returnValue == Ciefp3B:
+				if self.install_setting(Ciefp3B, Ciefp_zip, Ciefp_folder + Ciefp3B_path):
+				    self.installed(Ciefp3B)
+
+			if returnValue == Ciefp4A:
+				if self.install_setting(Ciefp4A, Ciefp_zip, Ciefp_folder + Ciefp4A_path):
+				    self.installed(Ciefp4A)
+
+			if returnValue == Ciefp4B:
+				if self.install_setting(Ciefp4B, Ciefp_zip, Ciefp_folder + Ciefp4B_path):
+				    self.installed(Ciefp4B)
 
 			if returnValue == Ciefp5:
 				if self.install_setting(Ciefp5, Ciefp_zip, Ciefp_folder + Ciefp5_path):
@@ -349,6 +368,22 @@ class ONEupdater(Screen):
 			if returnValue == Ciefp9:
 				if self.install_setting(Ciefp9, Ciefp_zip, Ciefp_folder + Ciefp9_path):
 				    self.installed(Ciefp9)
+
+			if returnValue == Ciefp10:
+				if self.install_setting(Ciefp10, Ciefp_zip, Ciefp_folder + Ciefp10_path):
+				    self.installed(Ciefp10)
+
+			if returnValue == Ciefp13:
+				if self.install_setting(Ciefp13, Ciefp_zip, Ciefp_folder + Ciefp13_path):
+				    self.installed(Ciefp13)
+
+			if returnValue == Ciefp16:
+				if self.install_setting(Ciefp16, Ciefp_zip, Ciefp_folder + Ciefp16_path):
+				    self.installed(Ciefp16)
+
+			if returnValue == Ciefp18:
+				if self.install_setting(Ciefp18, Ciefp_zip, Ciefp_folder + Ciefp18_path):
+				    self.installed(Ciefp18)
 
 			if returnValue == CiefpM:
 				if self.install_setting(CiefpM, Ciefp_zip, Ciefp_folder + CiefpM_path):

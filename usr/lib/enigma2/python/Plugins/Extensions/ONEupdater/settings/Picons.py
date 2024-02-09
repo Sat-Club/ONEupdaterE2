@@ -31,5 +31,5 @@ ziggo_220_lt='curl -s https://api.github.com/repos/picons/picons/releases/latest
 sat4_220_dr='curl -s https://api.github.com/repos/picons/picons/releases/latest | grep "browser_download_url.*srp-13.*220.*k.on.r.*ipk" | cut -d : -f 2,3'
 sat4_220_dt='curl -s https://api.github.com/repos/picons/picons/releases/latest | grep "browser_download_url.*srp-13.*220.*k.on.t.*ipk" | cut -d : -f 2,3'
 sat4_220_lt='curl -s https://api.github.com/repos/picons/picons/releases/latest | grep "browser_download_url.*srp-13.*220.*t.on.t.*ipk" | cut -d : -f 2,3'
-full_100_dr='curl -s https://api.github.com/repos/picons/picons/releases/latest | grep "browser_download_url.*srp-full.*ipk" | cut -d : -f 2,3'
+full_100_dr = 'curl -s https://api.github.com/repos/picons/picons/releases/latest | grep "browser_download_url.*srp-full.*ipk" | cut -d : -f 2,3'
 
