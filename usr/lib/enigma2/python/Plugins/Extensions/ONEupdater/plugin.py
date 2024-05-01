@@ -106,30 +106,30 @@ class ONEupdater(Screen):
 		t.start()
 
 	def menu_picons(self):
-        global menu
-        menu = 1
-        self.picons_list = []
-        self.picons_list.append(Picons1)
-        self.picons_list.append(Picons14)
-        self.picons_list.append(Picons15)
-        self.picons_list.append(Picons16)
-        self.picons_list.append(Picons17)
-        self.picons_list.append(Picons18)
-        self.picons_list.append(Picons2)
-        self.picons_list.append(Picons3)
-        self.picons_list.append(Picons4)
-        self.picons_list.append(Picons5)
-        self.picons_list.append(Picons6)
-        self.picons_list.append(Picons7)
-        self.picons_list.append(Picons8)
-        self.picons_list.append(Picons9)
-        self.picons_list.append(Picons10)
-        self.picons_list.append(Picons11)
-        self.picons_list.append(Picons12)
-        self.picons_list.append(Picons13)
-        self["menu"].moveToIndex(0)
-        self["menu"].l.setList(self.picons_list)
-        self.setTitle(_(App + " > Picons"))
+		global menu
+		menu = 1
+		self.picons_list = []
+		self.picons_list.append(Picons1)
+		self.picons_list.append(Picons14)
+		self.picons_list.append(Picons15)
+		self.picons_list.append(Picons16)
+		self.picons_list.append(Picons17)
+		self.picons_list.append(Picons18)
+		self.picons_list.append(Picons2)
+		self.picons_list.append(Picons3)
+		self.picons_list.append(Picons4)
+		self.picons_list.append(Picons5)
+		self.picons_list.append(Picons6)
+		self.picons_list.append(Picons7)
+		self.picons_list.append(Picons8)
+		self.picons_list.append(Picons9)
+		self.picons_list.append(Picons10)
+		self.picons_list.append(Picons11)
+		self.picons_list.append(Picons12)
+		self.picons_list.append(Picons13)
+		self["menu"].moveToIndex(0)
+		self["menu"].l.setList(self.picons_list)
+		self.setTitle(_(App + " > Picons"))
 
 	def menu_ciefp(self):
 		global menu
