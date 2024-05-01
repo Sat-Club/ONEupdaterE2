@@ -589,7 +589,7 @@ class ONEupdater(Screen):
 
 	def install_update(self, answer=False):
 		if answer:
-			self.session.open(Console, title='Upgrading...', cmdlist='wget -q "--no-check-certificate" https://git.multics.one/Qu4k3/ONEupdaterE2/raw/branch/main/installer.sh -O - | /bin/sh', finishedCallback=self.myCallback, closeOnSuccess=False)
+			self.session.open(Console, title='Upgrading...', cmdlist='wget -q "--no-check-certificate" https://raw.githubusercontent.com/Sat-Club/ONEupdaterE2/main/installer.sh -O - | /bin/sh', finishedCallback=self.myCallback, closeOnSuccess=False)
 		else:
 		    self.ask_upgrade()
 
