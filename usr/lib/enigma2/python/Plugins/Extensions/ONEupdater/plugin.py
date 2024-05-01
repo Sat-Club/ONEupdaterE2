@@ -34,7 +34,7 @@ from Components.Pixmap import Pixmap
 #session = None
 
 App = 'ONEupdater E2'
-Version = '3.0'
+Version = '3.1'
 Developer = 'Qu4k3'
 ONE = 'https://sat-club.eu'
 ONE_tmp =  '/tmp/ONEupdater/'
@@ -99,32 +99,37 @@ class ONEupdater(Screen):
 		self["Developer"] = Label(_("Developed by " + Developer))
 		self["Website"] = Label(_(ONE))
 		self["Version"] = Label(_("Version " + Version))
-		
+
 		self["actions"] = ActionMap(["OkCancelActions", "NumberActions"],{"ok": self.ok, "cancel": self.Exit}, -1)
 		menu = 0
 		t = Timer(0.5, self.update_me)
 		t.start()
 
 	def menu_picons(self):
-		global menu
-		menu = 1
-		self.picons_list = []
-		self.picons_list.append(Picons1)
-		self.picons_list.append(Picons2)
-		self.picons_list.append(Picons3)
-		self.picons_list.append(Picons4)
-		self.picons_list.append(Picons5)
-		self.picons_list.append(Picons6)
-		self.picons_list.append(Picons7)
-		self.picons_list.append(Picons8)
-		self.picons_list.append(Picons9)
-		self.picons_list.append(Picons10)
-		self.picons_list.append(Picons11)
-		self.picons_list.append(Picons12)
-		self.picons_list.append(Picons13)
-		self["menu"].moveToIndex(0)
-		self["menu"].l.setList(self.picons_list)
-		self.setTitle(_(App + " > Picons"))
+        global menu
+        menu = 1
+        self.picons_list = []
+        self.picons_list.append(Picons1)
+        self.picons_list.append(Picons14)
+        self.picons_list.append(Picons15)
+        self.picons_list.append(Picons16)
+        self.picons_list.append(Picons17)
+        self.picons_list.append(Picons18)
+        self.picons_list.append(Picons2)
+        self.picons_list.append(Picons3)
+        self.picons_list.append(Picons4)
+        self.picons_list.append(Picons5)
+        self.picons_list.append(Picons6)
+        self.picons_list.append(Picons7)
+        self.picons_list.append(Picons8)
+        self.picons_list.append(Picons9)
+        self.picons_list.append(Picons10)
+        self.picons_list.append(Picons11)
+        self.picons_list.append(Picons12)
+        self.picons_list.append(Picons13)
+        self["menu"].moveToIndex(0)
+        self["menu"].l.setList(self.picons_list)
+        self.setTitle(_(App + " > Picons"))
 
 	def menu_ciefp(self):
 		global menu
@@ -224,7 +229,7 @@ class ONEupdater(Screen):
 
 	def loading(self):
 	    self.session.open(MessageBox,("Loading"),  MessageBox.TYPE_INFO, timeout=4)
-		
+
 	def install_Picons(self, ulink):
 	    today = datetime.today()
 	    install_date = today.strftime('%Y-%m-%d')
@@ -262,7 +267,7 @@ class ONEupdater(Screen):
 	            remote_date = github_api['pushed_at']
 	            strp_remote_date = datetime.strptime(remote_date, '%Y-%m-%dT%H:%M:%SZ')
 	            remote_install_date = strp_remote_date.strftime('%Y-%m-%d')
-	            
+
 	            if local_install_date < remote_install_date:
 	                os.system('wget ' + link + ' -O ' + fzip)
 	                self.install_setting(name, fzip, path)
@@ -481,16 +486,79 @@ class ONEupdater(Screen):
 			if returnValue == MorphM:
 				if self.install_setting(MorphM, Morph_zip, Morph_folder + MorphM_path):
 				    self.installed(MorphM)
-				    
+
 			##Picons Menu
 			if returnValue == Picons1:
 			    if self.install_Picons(full_100_dr):
 			        self.installed(Picons1)
-			        
+
+			if returnValue == Picons14:
+			    if self.install_Picons(full_100_dt):
+			        self.installed(Picons14)
+
+			if returnValue == Picons15:
+			    if self.install_Picons(full_100_lt):
+			        self.installed(Picons15)
+
+			if returnValue == Picons16:
+			    if self.install_Picons(full_220_dr):
+			        self.installed(Picons16)
+
+			if returnValue == Picons17:
+			    if self.install_Picons(full_220_dt):
+			        self.installed(Picons17)
+
+			if returnValue == Picons18:
+			    if self.install_Picons(full_220_lt):
+			        self.installed(Picons18)
+
 			if returnValue == Picons2:
 			    if self.install_Picons(sat4_100_dr):
 			        self.installed(Picons2)
 
+			if returnValue == Picons3:
+			    if self.install_Picons(sat4_100_dt):
+			        self.installed(Picons3)
+
+			if returnValue == Picons4:
+			    if self.install_Picons(sat4_100_lt):
+			        self.installed(Picons4)
+
+			if returnValue == Picons5:
+			    if self.install_Picons(ziggo_100_dr):
+			        self.installed(Picons5)
+
+			if returnValue == Picons6:
+			    if self.install_Picons(ziggo_100_dt):
+			        self.installed(Picons6)
+
+			if returnValue == Picons7:
+			    if self.install_Picons(ziggo_100_lt):
+			        self.installed(Picons7)
+
+			if returnValue == Picons8:
+			    if self.install_Picons(sat4_220_dr):
+			        self.installed(Picons8)
+
+			if returnValue == Picons9:
+			    if self.install_Picons(sat4_220_dt):
+			        self.installed(Picons9)
+
+			if returnValue == Picons10:
+			    if self.install_Picons(sat4_220_lt):
+			        self.installed(Picons10)
+
+			if returnValue == Picons11:
+			    if self.install_Picons(ziggo_220_dr):
+			        self.installed(Picons11)
+
+			if returnValue == Picons12:
+			    if self.install_Picons(ziggo_220_dt):
+			        self.installed(Picons12)
+
+			if returnValue == Picons13:
+			    if self.install_Picons(ziggo_220_lt):
+			        self.installed(Picons13)
 
 	def update_me(self):
 		remote_version = '0.0'
@@ -547,5 +615,3 @@ def Plugins(**kwargs):
 	return PluginDescriptor(name=App, description=App + ' v'+ Version, where=[PluginDescriptor.WHERE_EXTENSIONSMENU, PluginDescriptor.WHERE_PLUGINMENU], icon="one.jpg", fnc = main)
 
 ####################################################
-
-

@@ -2,8 +2,8 @@
 ##setup command=wget -q "--no-check-certificate" https://raw.githubusercontent.com/Sat-Club/ONEupdaterE2/main/installer.sh -O - | /bin/sh
 
 ######### Only This 2 lines to edit with new version ######
-version='3.0'
-changelog='\nFix bugs\nUpdated Ciefp Settings'
+version='3.1'
+changelog='\nFix little bugs\nUpdated Picons List'
 ##############################################################
 
 TMPPATH=/tmp/ONEupdaterE2
