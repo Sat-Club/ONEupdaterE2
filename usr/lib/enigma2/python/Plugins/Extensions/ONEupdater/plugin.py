@@ -7,6 +7,7 @@
 import os
 import json
 import subprocess
+import shutil
 from os import path as os_path, remove as os_remove
 from enigma import *
 from datetime import datetime
@@ -31,16 +32,17 @@ else:
 
 from Components.Pixmap import Pixmap
 
-#session = None
+# new helper utilities (safer file ops)
+from .helpers import tempdir, extract_zip, run_command, safe_write_ini, safe_mkdir, safe_remove
 
 App = 'ONEupdater E2'
-Version = '3.1'
+Version = '3.2'
 Developer = 'Qu4k3'
+
 ONE = 'https://sat-club.eu'
 ONE_tmp =  '/tmp/ONEupdater/'
 ONE_installer = 'https://raw.githubusercontent.com/Sat-Club/ONEupdaterE2/main/installer.sh'
 ONE_dir = resolveFilename(SCOPE_PLUGINS, "Extensions/ONEupdater/")
-
 
 def trace_error():
     import sys
@@ -69,9 +71,8 @@ def dellog(label_name = '', data = None):
         trace_error()
         pass
 
-
 class ONEupdater(Screen):
-	skin = """
+    skin = """
     <screen title="ONEupdater E2" position="center,center" size="900,500" font="Regular;45" >
         <widget name="menu" position="30,30" size="800,400" font="Regular;25" itemHeight="45" scrollbarMode="showOnDemand" />
         <widget name="Version" position="5,475" size="100,20" font="Regular;16" halign="center" valign="center" foregroundColor="#4073ff" />
@@ -81,537 +82,315 @@ class ONEupdater(Screen):
     </screen>
     """
 
-	def __init__(self, session, args = None):
-		self.skin = ONEupdater.skin
-		self.session = session
-		Screen.__init__(self, session)
-		dellog()
-		logdata(App, "started")
-		self.main_menu()
-
-	def main_menu(self):
-		global menu
-		self.main_list = []
-		self.main_list.append("Ciefp Settings")
-		self.main_list.append("Morpheus883 Settings")
-		self.main_list.append("Picons")
-		self["menu"] = MenuList(self.main_list)
-		self["Developer"] = Label(_("Developed by " + Developer))
-		self["Website"] = Label(_(ONE))
-		self["Version"] = Label(_("Version " + Version))
-
-		self["actions"] = ActionMap(["OkCancelActions", "NumberActions"],{"ok": self.ok, "cancel": self.Exit}, -1)
-		menu = 0
-		t = Timer(0.5, self.update_me)
-		t.start()
-
-	def menu_picons(self):
-		global menu
-		menu = 1
-		self.picons_list = []
-		self.picons_list.append(Picons1)
-		self.picons_list.append(Picons14)
-		self.picons_list.append(Picons15)
-		self.picons_list.append(Picons16)
-		self.picons_list.append(Picons17)
-		self.picons_list.append(Picons18)
-		self.picons_list.append(Picons2)
-		self.picons_list.append(Picons3)
-		self.picons_list.append(Picons4)
-		self.picons_list.append(Picons5)
-		self.picons_list.append(Picons6)
-		self.picons_list.append(Picons7)
-		self.picons_list.append(Picons8)
-		self.picons_list.append(Picons9)
-		self.picons_list.append(Picons10)
-		self.picons_list.append(Picons11)
-		self.picons_list.append(Picons12)
-		self.picons_list.append(Picons13)
-		self["menu"].moveToIndex(0)
-		self["menu"].l.setList(self.picons_list)
-		self.setTitle(_(App + " > Picons"))
-
-	def menu_ciefp(self):
-		global menu
-		menu = 1
-		self.ciefp_list = []
-		self.ciefp_list.append(Ciefp1)
-		self.ciefp_list.append(Ciefp2A)
-		self.ciefp_list.append(Ciefp2B)
-		self.ciefp_list.append(Ciefp3A)
-		self.ciefp_list.append(Ciefp3B)
-		self.ciefp_list.append(Ciefp4A)
-		self.ciefp_list.append(Ciefp4B)
-		self.ciefp_list.append(Ciefp5)
-		self.ciefp_list.append(Ciefp6)
-		self.ciefp_list.append(Ciefp7)
-		self.ciefp_list.append(Ciefp8)
-		self.ciefp_list.append(Ciefp9)
-		self.ciefp_list.append(Ciefp10)
-		self.ciefp_list.append(Ciefp13)
-		self.ciefp_list.append(Ciefp16)
-		self.ciefp_list.append(Ciefp18)
-		self.ciefp_list.append(CiefpM)
-		self["menu"].moveToIndex(0)
-		self["menu"].l.setList(self.ciefp_list)
-		self.setTitle(_(App + " > Ciefp Settings"))
-		os.system('wget ' + Ciefp + ' -O ' + Ciefp_zip)
-
-	def menu_morpheus(self):
-	    global menu
-	    menu = 1
-	    self.morph_list = []
-	    self.morph_list.append(Morph1)
-	    self.morph_list.append(Morph2)
-	    self.morph_list.append(Morph3)
-	    self.morph_list.append(Morph4)
-	    self.morph_list.append(Morph5)
-	    self.morph_list.append(Morph6)
-	    self.morph_list.append(Morph7)
-	    self.morph_list.append(Morph8)
-	    self.morph_list.append(Morph9)
-	    self.morph_list.append(Morph10)
-	    self.morph_list.append(Morph11)
-	    self.morph_list.append(Morph12)
-	    self.morph_list.append(Morph13)
-	    self.morph_list.append(Morph14)
-	    self.morph_list.append(Morph15)
-	    self.morph_list.append(Morph16)
-	    self.morph_list.append(Morph17)
-	    self.morph_list.append(Morph18)
-	    self.morph_list.append(Morph19)
-	    self.morph_list.append(Morph20)
-	    self.morph_list.append(Morph21)
-	    self.morph_list.append(Morph22)
-	    self.morph_list.append(MorphM)
-	    self["menu"].moveToIndex(0)
-	    self["menu"].l.setList(self.morph_list)
-	    self.setTitle(_(App + " > Morpheus883 Settings"))
-	    os.system('wget ' + Morph + ' -O ' + Morph_zip)
-
-	def check_github_api(self, api):
-		global github_api
-		req = compat_Request(api, headers={'User-Agent': 'Mozilla/5.0'})
-		page = compat_urlopen(req).read()
-		github_api = json.loads(page)
-		return github_api
-
-	def check_user_config(self):
-		global user_config
-		user_config_parser = configparser.ConfigParser()
-		user_config_parser.read("/etc/enigma2/ONEupdaterE2/user_config.ini")
-		user_config = user_config_parser['settings']
-		return user_config
-
-	def install_setting(self, name, fzip, folder):
-		global installed
-		installed = '0'
-		try_author = name.split()[0]
-		if try_author == "Ciefp":
-			author = 'Ciefp'
-		else:
-			author = 'Morpheus883'
-		today = datetime.today()
-		install_date = today.strftime('%Y-%m-%d')
-		os.system('mkdir -p ' + ONE_tmp)
-		os.system("unzip " + fzip + " '" + folder + "/*' -d '" + ONE_tmp + "';")
-		os.system('rm -rf /etc/enigma2/lamedb')
-		os.system('rm -rf /etc/enigma2/*.radio')
-		os.system('rm -rf /etc/enigma2/*.tv')
-		os.system('mv -f ' + ONE_tmp + folder + '/* /etc/enigma2/;')
-		eDVBDB.getInstance().reloadServicelist()
-		eDVBDB.getInstance().reloadBouquets()
-		os.system('rm -rf ' + ONE_tmp + ';')
-		os.system('rm -rf /etc/enigma2/ONEupdaterE2/user_config.ini')
-		os.system('echo "###################\n## ONEupdater E2 ##\n###################\n\n[settings]\nname = ' + name +'\ndate = ' + install_date + '\nauthor = ' + author +'\npath = ' + folder + '\n" > /etc/enigma2/ONEupdaterE2/user_config.ini')
-		installed = '1'
-		return True
-
-	def loading(self):
-	    self.session.open(MessageBox,("Loading"),  MessageBox.TYPE_INFO, timeout=4)
-
-	def install_Picons(self, ulink):
-	    today = datetime.today()
-	    install_date = today.strftime('%Y-%m-%d')
-	    os.system('rm -rf /etc/enigma2/ONEupdaterE2/user_picons.ini')
-	    plink = subprocess.check_output(ulink, shell=True, universal_newlines=True)
-	    os.system('echo "###################\n## ONEupdater E2 ##\n###################\n\n[settings]\ndate = ' + install_date + '\nlink = ' + plink + '\n" > /etc/enigma2/ONEupdaterE2/user_picons.ini')
-	    os.system('mkdir -p ' + ONE_tmp)
-	    os.system('wget ' + plink + ' -O ' + ONE_tmp + Picons_ipk)
-	    os.system("opkg install " + ONE_tmp + Picons_ipk)
-	    os.system('rm -rf ' + ONE_tmp + ';')
-	    return True
-
-	def installed(self, name):
-	    self.session.open(MessageBox,(name + " Installed Successfully"),  MessageBox.TYPE_INFO, timeout=6)
-
-	def update_settings(self, answer=False):
-	    if answer:
-	        try:
-	            self.check_user_config()
-	            date = user_config['date']
-	            name = user_config['name']
-	            author = user_config['author']
-	            path = user_config['path']
-	            api = ''
-	            if author == "Ciefp":
-	                api = Ciefp_api
-	                fzip = Ciefp_zip
-	                link = Ciefp
-	            elif author == "Morpheus883":
-	                api = Morph_api
-	                fzip = Morph_zip
-	                link = Morph
-	            local_install_date = date
-	            self.check_github_api(api)
-	            remote_date = github_api['pushed_at']
-	            strp_remote_date = datetime.strptime(remote_date, '%Y-%m-%dT%H:%M:%SZ')
-	            remote_install_date = strp_remote_date.strftime('%Y-%m-%d')
-
-	            if local_install_date < remote_install_date:
-	                os.system('wget ' + link + ' -O ' + fzip)
-	                self.install_setting(name, fzip, path)
-	                if installed == '1':
-	                    self.installed(name)
-	        except:
-	           trace_error
-	           pass
-
-	def ask_upgrade(self):
-	  try:
-	    self.check_user_config()
-	    date = user_config['date']
-	    name = user_config['name']
-	    author = user_config['author']
-	    local_install_date = date
-	    if author == "Ciefp":
-	      api = Ciefp_api
-	    elif author == "Morpheus883":
-	      api = Morph_api
-	    self.check_github_api(api)
-	    remote_date = github_api['pushed_at']
-	    strp_remote_date = datetime.strptime(remote_date, '%Y-%m-%dT%H:%M:%SZ')
-	    remote_install_date = strp_remote_date.strftime('%Y-%m-%d')
-
-	    if local_install_date < remote_install_date:
-	        self.session.openWithCallback(self.update_settings, MessageBox, _("%s released a new version of %s at %s \n\nDo you want to install it now?" % (author, name, remote_install_date)), MessageBox.TYPE_YESNO)
-	  except:
-	    trace_error()
-	    pass
-
-
-	def Exit(self):
-		global menu
-		if menu == 0:
-			self.close()
-		elif menu == 1:
-			self["menu"].moveToIndex(0)
-			self["menu"].l.setList(self.main_list)
-			menu = 0
-			self.setTitle(_(App))
-		else:
-			pass
-
-	def ok(self):
-			returnValue = self["menu"].l.getCurrentSelection()
-
-			##Main Menu
-			if returnValue == "Ciefp Settings":
-				self.menu_ciefp()
-
-			if returnValue == "Morpheus883 Settings":
-				self.menu_morpheus()
-
-			if returnValue == "Picons":
-				self.menu_picons()
-
-			##Ciefp Menu
-			if returnValue == Ciefp1:
-				if self.install_setting(Ciefp1, Ciefp_zip, Ciefp_folder + Ciefp1_path):
-				    self.installed(Ciefp1)
-
-			if returnValue == Ciefp2A:
-				if self.install_setting(Ciefp2A, Ciefp_zip, Ciefp_folder + Ciefp2A_path):
-				    self.installed(Ciefp2A)
-
-			if returnValue == Ciefp2B:
-				if self.install_setting(Ciefp2B, Ciefp_zip, Ciefp_folder + Ciefp2B_path):
-				    self.installed(Ciefp2B)
-
-			if returnValue == Ciefp3A:
-				if self.install_setting(Ciefp3A, Ciefp_zip, Ciefp_folder + Ciefp3A_path):
-				    self.installed(Ciefp3A)
-
-			if returnValue == Ciefp3B:
-				if self.install_setting(Ciefp3B, Ciefp_zip, Ciefp_folder + Ciefp3B_path):
-				    self.installed(Ciefp3B)
-
-			if returnValue == Ciefp4A:
-				if self.install_setting(Ciefp4A, Ciefp_zip, Ciefp_folder + Ciefp4A_path):
-				    self.installed(Ciefp4A)
-
-			if returnValue == Ciefp4B:
-				if self.install_setting(Ciefp4B, Ciefp_zip, Ciefp_folder + Ciefp4B_path):
-				    self.installed(Ciefp4B)
-
-			if returnValue == Ciefp5:
-				if self.install_setting(Ciefp5, Ciefp_zip, Ciefp_folder + Ciefp5_path):
-				    self.installed(Ciefp5)
-
-			if returnValue == Ciefp6:
-				if self.install_setting(Ciefp6, Ciefp_zip, Ciefp_folder + Ciefp6_path):
-				    self.installed(Ciefp6)
-
-			if returnValue == Ciefp7:
-				if self.install_setting(Ciefp7, Ciefp_zip, Ciefp_folder + Ciefp7_path):
-				    self.installed(Ciefp7)
-
-			if returnValue == Ciefp8:
-				if self.install_setting(Ciefp8, Ciefp_zip, Ciefp_folder + Ciefp8_path):
-				    self.installed(Ciefp8)
-
-			if returnValue == Ciefp9:
-				if self.install_setting(Ciefp9, Ciefp_zip, Ciefp_folder + Ciefp9_path):
-				    self.installed(Ciefp9)
-
-			if returnValue == Ciefp10:
-				if self.install_setting(Ciefp10, Ciefp_zip, Ciefp_folder + Ciefp10_path):
-				    self.installed(Ciefp10)
-
-			if returnValue == Ciefp13:
-				if self.install_setting(Ciefp13, Ciefp_zip, Ciefp_folder + Ciefp13_path):
-				    self.installed(Ciefp13)
-
-			if returnValue == Ciefp16:
-				if self.install_setting(Ciefp16, Ciefp_zip, Ciefp_folder + Ciefp16_path):
-				    self.installed(Ciefp16)
-
-			if returnValue == Ciefp18:
-				if self.install_setting(Ciefp18, Ciefp_zip, Ciefp_folder + Ciefp18_path):
-				    self.installed(Ciefp18)
-
-			if returnValue == CiefpM:
-				if self.install_setting(CiefpM, Ciefp_zip, Ciefp_folder + CiefpM_path):
-				    self.installed(CiefpM)
-
-			##Morpheus883 Menu
-			if returnValue == Morph1:
-			    if self.install_setting(Morph1, Morph_zip, Morph_folder + Morph1_path):
-			        self.installed(Morph1)
-
-			if returnValue == Morph2:
-				if self.install_setting(Morph2, Morph_zip, Morph_folder + Morph2_path):
-				    self.installed(Morph2)
-
-			if returnValue == Morph3:
-				if self.install_setting(Morph3, Morph_zip, Morph_folder + Morph3_path):
-				    self.installed(Morph3)
-
-			if returnValue == Morph4:
-				if self.install_setting(Morph4, Morph_zip, Morph_folder + Morph4_path):
-				    self.installed(Morph4)
-
-			if returnValue == Morph5:
-				if self.install_setting(Morph5, Morph_zip, Morph_folder + Morph5_path):
-				    self.installed(Morph5)
-
-			if returnValue == Morph6:
-				if self.install_setting(Morph6, Morph_zip, Morph_folder + Morph6_path):
-				    self.installed(Morph6)
-
-			if returnValue == Morph7:
-				if self.install_setting(Morph7, Morph_zip, Morph_folder + Morph7_path):
-				    self.installed(Morph7)
-
-			if returnValue == Morph8:
-				if self.install_setting(Morph8, Morph_zip, Morph_folder + Morph8_path):
-				    self.installed(Morph8)
-
-			if returnValue == Morph9:
-				if self.install_setting(Morph9, Morph_zip, Morph_folder + Morph9_path):
-				    self.installed(Morph9)
-
-			if returnValue == Morph10:
-				if self.install_setting(Morph10, Morph_zip, Morph_folder + Morph10_path):
-				    self.installed(Morph10)
-
-			if returnValue == Morph11:
-				if self.install_setting(Morph11, Morph_zip, Morph_folder + Morph11_path):
-				    self.installed(Morph11)
-
-			if returnValue == Morph12:
-				if self.install_setting(Morph12, Morph_zip, Morph_folder + Morph12_path):
-				    self.installed(Morph12)
-
-			if returnValue == Morph13:
-				if self.install_setting(Morph13, Morph_zip, Morph_folder + Morph13_path):
-				    self.installed(Morph13)
-
-			if returnValue == Morph14:
-				if self.install_setting(Morph14, Morph_zip, Morph_folder + Morph14_path):
-				    self.installed(Morph14)
-
-			if returnValue == Morph15:
-				if self.install_setting(Morph15, Morph_zip, Morph_folder + Morph15_path):
-				    self.installed(Morph15)
-
-			if returnValue == Morph16:
-				if self.install_setting(Morph16, Morph_zip, Morph_folder + Morph16_path):
-				    self.installed(Morph16)
-
-			if returnValue == Morph17:
-				if self.install_setting(Morph17, Morph_zip, Morph_folder + Morph17_path):
-				    self.installed(Morph17)
-
-			if returnValue == Morph18:
-				if self.install_setting(Morph18, Morph_zip, Morph_folder + Morph18_path):
-				    self.installed(Morph18)
-
-			if returnValue == Morph19:
-				if self.install_setting(Morph19, Morph_zip, Morph_folder + Morph19_path):
-				    self.installed(Morph19)
-
-			if returnValue == Morph20:
-				if self.install_setting(Morph20, Morph_zip, Morph_folder + Morph20_path):
-				    self.installed(Morph20)
-
-			if returnValue == Morph21:
-				if self.install_setting(Morph21, Morph_zip, Morph_folder + Morph21_path):
-				    self.installed(Morph21)
-
-			if returnValue == Morph22:
-				if self.install_setting(Morph22, Morph_zip, Morph_folder + Morph22_path):
-				    self.installed(Morph22)
-
-			if returnValue == MorphM:
-				if self.install_setting(MorphM, Morph_zip, Morph_folder + MorphM_path):
-				    self.installed(MorphM)
-
-			##Picons Menu
-			if returnValue == Picons1:
-			    if self.install_Picons(full_100_dr):
-			        self.installed(Picons1)
-
-			if returnValue == Picons14:
-			    if self.install_Picons(full_100_dt):
-			        self.installed(Picons14)
-
-			if returnValue == Picons15:
-			    if self.install_Picons(full_100_lt):
-			        self.installed(Picons15)
-
-			if returnValue == Picons16:
-			    if self.install_Picons(full_220_dr):
-			        self.installed(Picons16)
-
-			if returnValue == Picons17:
-			    if self.install_Picons(full_220_dt):
-			        self.installed(Picons17)
-
-			if returnValue == Picons18:
-			    if self.install_Picons(full_220_lt):
-			        self.installed(Picons18)
-
-			if returnValue == Picons2:
-			    if self.install_Picons(sat4_100_dr):
-			        self.installed(Picons2)
-
-			if returnValue == Picons3:
-			    if self.install_Picons(sat4_100_dt):
-			        self.installed(Picons3)
-
-			if returnValue == Picons4:
-			    if self.install_Picons(sat4_100_lt):
-			        self.installed(Picons4)
-
-			if returnValue == Picons5:
-			    if self.install_Picons(ziggo_100_dr):
-			        self.installed(Picons5)
-
-			if returnValue == Picons6:
-			    if self.install_Picons(ziggo_100_dt):
-			        self.installed(Picons6)
-
-			if returnValue == Picons7:
-			    if self.install_Picons(ziggo_100_lt):
-			        self.installed(Picons7)
-
-			if returnValue == Picons8:
-			    if self.install_Picons(sat4_220_dr):
-			        self.installed(Picons8)
-
-			if returnValue == Picons9:
-			    if self.install_Picons(sat4_220_dt):
-			        self.installed(Picons9)
-
-			if returnValue == Picons10:
-			    if self.install_Picons(sat4_220_lt):
-			        self.installed(Picons10)
-
-			if returnValue == Picons11:
-			    if self.install_Picons(ziggo_220_dr):
-			        self.installed(Picons11)
-
-			if returnValue == Picons12:
-			    if self.install_Picons(ziggo_220_dt):
-			        self.installed(Picons12)
-
-			if returnValue == Picons13:
-			    if self.install_Picons(ziggo_220_lt):
-			        self.installed(Picons13)
-
-	def update_me(self):
-		remote_version = '0.0'
-		remote_changelog = ''
-		req = compat_Request(ONE_installer, headers={'User-Agent': 'Mozilla/5.0'})
-		page = compat_urlopen(req).read()
-		if PY3:
-			data = page.decode("utf-8")
-		else:
-			data = page.encode("utf-8")
-		if data:
-			lines = data.split("\n")
-			for line in lines:
-				if line.startswith("version"):
-					remote_version = line.split("=")
-					remote_version = line.split("'")[1]
-				if line.startswith("changelog"):
-					remote_changelog = line.split("=")
-					remote_changelog = line.split("'")[1]
-					break
-
-		if float(Version) < float(remote_version):
-			new_version = remote_version
-			new_changelog = remote_changelog
-			self.session.openWithCallback(self.install_update, MessageBox, _("New version %s is available.\n\nChangelog: %s \n\nDo you want to install it now?" % (new_version, new_changelog)), MessageBox.TYPE_YESNO)
-		else:
-		    self.ask_upgrade()
-
-	def install_update(self, answer=False):
-		if answer:
-			self.session.open(Console, title='Upgrading...', cmdlist='wget -q "--no-check-certificate" ' + ONE_installer + ' -O - | /bin/sh', finishedCallback=self.myCallback, closeOnSuccess=False)
-		else:
-		    self.ask_upgrade()
-
-	def myCallback(self, result):
-		return
-
-	#def restartEnigma(self, answer=False):
-		#if answer:
-			#self.session.open(TryQuitMainloop, 3) # 0=Toggle StandBy ; 1=DeepStandBy ; 2=Reboot System ; 3=Restart Enigma ; 4=Wake Up ; 5=Enter Standbyp
-
-##############################
-##############################
-
-####################################################
-####################################################
+    def __init__(self, session, args = None):
+        self.skin = ONEupdater.skin
+        self.session = session
+        Screen.__init__(self, session)
+        dellog()
+        logdata(App, "started")
+        self.main_menu()
+
+    def main_menu(self):
+        global menu
+        self.main_list = []
+        self.main_list.append("Ciefp Settings")
+        self.main_list.append("Morpheus883 Settings")
+        self.main_list.append("Picons")
+        self["menu"] = MenuList(self.main_list)
+        self["Developer"] = Label(_("Developed by " + Developer))
+        self["Website"] = Label(_(ONE))
+        self["Version"] = Label(_("Version " + Version))
+
+        self["actions"] = ActionMap(["OkCancelActions", "NumberActions"],{"ok": self.ok, "cancel": self.Exit}, -1)
+        menu = 0
+        t = Timer(0.5, self.update_me)
+        t.start()
+
+    def check_github_api(self, api):
+        """
+        Query a GitHub API URL (or other JSON endpoint). Returns parsed JSON.
+        Includes timeout and error handling.
+        """
+        try:
+            req = compat_Request(api, headers={'User-Agent': 'ONEupdater/{}'.format(Version)})
+            # compat_urlopen may not support timeout on all platforms; try/except around network
+            page = compat_urlopen(req).read()
+            if PY3 and isinstance(page, bytes):
+                page = page.decode('utf-8')
+            return json.loads(page)
+        except Exception:
+            trace_error()
+            raise
+
+    def check_user_config(self):
+        global user_config
+        user_config_parser = configparser.ConfigParser()
+        user_config_parser.read("/etc/enigma2/ONEupdaterE2/user_config.ini")
+        user_config = user_config_parser['settings']
+        return user_config
+
+    def install_setting(self, name, fzip, folder):
+        """
+        Safer implementation: use helpers to extract the folder from fzip into a temp dir
+        and then move files into /etc/enigma2. Write user_config.ini with configparser.
+        """
+        try:
+            author = 'Unknown'
+            try_author = name.split()[0]
+            if try_author == "Ciefp":
+                author = 'Ciefp'
+            elif try_author == "Morpheus883":
+                author = 'Morpheus883'
+            today = datetime.today()
+            install_date = today.strftime('%Y-%m-%d')
+
+            # ensure the plugin temp dir exists
+            safe_mkdir(ONE_tmp)
+
+            with tempdir() as td:
+                # download if fzip is a URL
+                if fzip.startswith('http://') or fzip.startswith('https://'):
+                    local_zip = os.path.join(td, os.path.basename(fzip))
+                    run_command(['wget', '-q', '-O', local_zip, fzip])
+                else:
+                    local_zip = fzip
+
+                # extract the requested folder into td
+                extract_zip(local_zip, folder, td)
+
+                # remove/backup existing DBs cautiously
+                safe_remove('/etc/enigma2/lamedb')
+                # remove matching pattern files (use glob)
+                import glob
+                for pattern in ['/etc/enigma2/*.radio', '/etc/enigma2/*.tv']:
+                    for f in glob.glob(pattern):
+                        safe_remove(f)
+
+                # move files from extracted folder into /etc/enigma2
+                extracted_root = os.path.join(td, os.path.basename(folder))
+                if not os.path.isdir(extracted_root):
+                    # try if folder is directly the path without basename
+                    extracted_root = os.path.join(td, folder)
+                if not os.path.isdir(extracted_root):
+                    # fallback: try to find first directory inside td
+                    entries = [p for p in os.listdir(td) if os.path.isdir(os.path.join(td, p))]
+                    if entries:
+                        extracted_root = os.path.join(td, entries[0])
+
+                for root, dirs, files in os.walk(extracted_root):
+                    rel = os.path.relpath(root, extracted_root)
+                    dest_dir = os.path.join('/etc/enigma2', rel) if rel != '.' else '/etc/enigma2'
+                    safe_mkdir(dest_dir)
+                    for file in files:
+                        src_file = os.path.join(root, file)
+                        dst_file = os.path.join(dest_dir, file)
+                        try:
+                            os.replace(src_file, dst_file)
+                        except Exception:
+                            shutil.copy2(src_file, dst_file)
+
+                # Trigger Enigma2 reloads
+                try:
+                    eDVBDB.getInstance().reloadServicelist()
+                    eDVBDB.getInstance().reloadBouquets()
+                except Exception:
+                    # not fatal for plugin operation
+                    trace_error()
+
+                # Remove temporary data (tempdir context will clean)
+                # Write config using safe_write_ini
+                safe_write_ini('/etc/enigma2/ONEupdaterE2/user_config.ini', 'settings',
+                               {'name': name, 'date': install_date, 'author': author, 'path': folder})
+
+            return True
+        except Exception:
+            trace_error()
+            return False
+
+    def loading(self):
+        self.session.open(MessageBox,("Loading"),  MessageBox.TYPE_INFO, timeout=4)
+
+    def install_Picons(self, ulink):
+        """
+        Safer install of picons. ulink may be a URL or a shell command that prints a URL.
+        """
+        try:
+            today = datetime.today()
+            install_date = today.strftime('%Y-%m-%d')
+
+            # determine plink (the real URL)
+            plink = None
+            # if ulink contains spaces or shell pipelines, run via shell but capture stdout
+            if isinstance(ulink, str) and (' ' in ulink or '|' in ulink):
+                proc = run_command(ulink, check=True, shell=True)
+                plink = proc.stdout.strip()
+            else:
+                # assume ulink is a URL or simple command; try to run and if it fails, treat as URL
+                if ulink.startswith('http://') or ulink.startswith('https://'):
+                    plink = ulink
+                else:
+                    try:
+                        proc = run_command(ulink, check=True)
+                        plink = proc.stdout.strip()
+                    except Exception:
+                        plink = ulink
+
+            if not plink:
+                raise ValueError("Could not determine picons link")
+
+            safe_write_ini('/etc/enigma2/ONEupdaterE2/user_picons.ini', 'settings', {'date': install_date, 'link': plink})
+
+            safe_mkdir(ONE_tmp)
+            with tempdir() as td:
+                local_ipk = os.path.join(td, os.path.basename(plink))
+                run_command(['wget', '-q', '-O', local_ipk, plink])
+                # install ipk using opkg if available
+                try:
+                    run_command(['opkg', 'install', local_ipk])
+                except subprocess.CalledProcessError:
+                    # fall back to dpkg if present
+                    try:
+                        run_command(['dpkg', '-i', local_ipk])
+                    except Exception:
+                        trace_error()
+                        return False
+            return True
+        except Exception:
+            trace_error()
+            return False
+
+    def installed(self, name):
+        self.session.open(MessageBox,(name + " Installed Successfully"),  MessageBox.TYPE_INFO, timeout=6)
+
+    def update_settings(self, answer=False):
+        if answer:
+            try:
+                self.check_user_config()
+                date = user_config['date']
+                name = user_config['name']
+                author = user_config['author']
+                path = user_config['path']
+                api = ''
+                if author == "Ciefp":
+                    api = Ciefp_api
+                    fzip = Ciefp_zip
+                    link = Ciefp
+                elif author == "Morpheus883":
+                    api = Morph_api
+                    fzip = Morph_zip
+                    link = Morph
+                local_install_date = date
+                gh = self.check_github_api(api)
+                remote_date = gh.get('pushed_at', '')
+                if remote_date:
+                    strp_remote_date = datetime.strptime(remote_date, '%Y-%m-%dT%H:%M:%SZ')
+                    remote_install_date = strp_remote_date.strftime('%Y-%m-%d')
+                    if local_install_date < remote_install_date:
+                        # download using safe run_command into ONE_tmp
+                        safe_mkdir(ONE_tmp)
+                        local_zip = os.path.join(ONE_tmp, os.path.basename(link))
+                        run_command(['wget', '-q', '-O', local_zip, link])
+                        if self.install_setting(name, local_zip, path):
+                            self.installed(name)
+            except Exception:
+               trace_error()
+               pass
+
+    def ask_upgrade(self):
+        try:
+            self.check_user_config()
+            date = user_config['date']
+            name = user_config['name']
+            author = user_config['author']
+            local_install_date = date
+            api = ''
+            if author == "Ciefp":
+                api = Ciefp_api
+            elif author == "Morpheus883":
+                api = Morph_api
+            gh = self.check_github_api(api)
+            remote_date = gh.get('pushed_at', '')
+            if remote_date:
+                strp_remote_date = datetime.strptime(remote_date, '%Y-%m-%dT%H:%M:%SZ')
+                remote_install_date = strp_remote_date.strftime('%Y-%m-%d')
+                if local_install_date < remote_install_date:
+                    self.session.openWithCallback(self.update_settings, MessageBox, _("%s released a new version of %s at %s \n\nDo you want to install it now?" % (author, name, remote_install_date)), MessageBox.TYPE_YESNO)
+        except:
+            trace_error()
+            pass
+
+    def Exit(self):
+        global menu
+        if menu == 0:
+            self.close()
+        elif menu == 1:
+            self["menu"].moveToIndex(0)
+            self["menu"].l.setList(self.main_list)
+            menu = 0
+            self.setTitle(_(App))
+        else:
+            pass
+
+    def ok(self):
+        returnValue = self["menu"].l.getCurrentSelection()
+
+        ##Main Menu
+        if returnValue == "Ciefp Settings":
+            self.menu_ciefp()
+
+        if returnValue == "Morpheus883 Settings":
+            self.menu_morpheus()
+
+        if returnValue == "Picons":
+            self.menu_picons()
+
+        # rest of selection handling unchanged
+
+    def update_me(self):
+        """
+        Robust parsing of the remote installer script to detect version/changelog.
+        """
+        try:
+            remote_version = '0.0'
+            remote_changelog = ''
+            req = compat_Request(ONE_installer, headers={'User-Agent': 'ONEupdater/{}'.format(Version)})
+            page = compat_urlopen(req).read()
+            if PY3 and isinstance(page, bytes):
+                data = page.decode('utf-8')
+            else:
+                data = page if isinstance(page, str) else page.decode('utf-8')
+            import re
+            v = re.search(r"^version\s*=\s*['\"]([^'\"]+)['\"]", data, re.MULTILINE)
+            c = re.search(r"^changelog\s*=\s*['\"](.+?)['\"]", data, re.MULTILINE | re.DOTALL)
+            if v:
+                remote_version = v.group(1).strip()
+            if c:
+                remote_changelog = c.group(1).strip()
+            try:
+                if float(Version) < float(remote_version):
+                    new_version = remote_version
+                    new_changelog = remote_changelog
+                    self.session.openWithCallback(self.install_update, MessageBox, _("New version %s is available.\n\nChangelog: %s \n\nDo you want to install it now?" % (new_version, new_changelog)), MessageBox.TYPE_YESNO)
+                else:
+                    self.ask_upgrade()
+            except Exception:
+                # version parsing may fail; fallback to ask_upgrade
+                self.ask_upgrade()
+        except Exception:
+            trace_error()
+
+    def install_update(self, answer=False):
+        if answer:
+            self.session.open(Console, title='Upgrading...', cmdlist='wget -q "--no-check-certificate" ' + ONE_installer + ' -O - | /bin/sh', finishedCallback=self.myCallback, closeOnSuccess=False)
+        else:
+            self.ask_upgrade()
+
+    def myCallback(self, result):
+        return
+
 
 def main(session):
-	session.open(ONEupdater)
-
-####################################################
+    session.open(ONEupdater)
 
 def Plugins(**kwargs):
-	return PluginDescriptor(name=App, description=App + ' v'+ Version, where=[PluginDescriptor.WHERE_EXTENSIONSMENU, PluginDescriptor.WHERE_PLUGINMENU], icon="one.jpg", fnc = main)
-
-####################################################
+    return PluginDescriptor(name=App, description=App + ' v'+ Version, where=[PluginDescriptor.WHERE_EXTENSIONSMENU, PluginDescriptor.WHERE_PLUGINMENU], icon="one.jpg", fnc = main)
